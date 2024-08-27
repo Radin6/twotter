@@ -1,0 +1,2 @@
+guardar datos del user en zustand
+seguir con la llamada al endpoint para crear posts
