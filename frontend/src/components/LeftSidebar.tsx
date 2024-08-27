@@ -3,8 +3,8 @@ import userStore from "../store/userStore";
 function LeftSidebar() {
   const { user } = userStore()
   return (
-    <aside className="w-[200px] h-screen bg-slate-700">
-      <div className="flex flex-col justify-between h-full p-8">
+    <aside className="h-screen w-[150px]">
+      <div className="flex flex-col justify-between h-full p-3 fixed w-[150px] border rounded-md border-gray-500">
         <ul>
           <li className="p-2 hover:bg-slate-50/30 cursor-pointer">Home</li>
           <li className="p-2 hover:bg-slate-50/30 cursor-pointer">Expore</li>

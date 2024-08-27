@@ -7,7 +7,7 @@ interface ContainerProps {
 
 function Container({ children, style }: ContainerProps) {
   return (
-    <main className={`flex flex-row mx-auto justify-center max-w-[1000px] min-h-screen ${style}`}>
+    <main className={`flex flex-row mx-auto justify-center max-w-[900px] min-h-screen ${style}`}>
       {children}
     </main>
   )
