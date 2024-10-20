@@ -7,6 +7,8 @@ import RightSidebar from "@/components/RightSidebar"
 import { IpostData } from "@/types/post"
 import toast, { Toaster } from "react-hot-toast"
 import createPost from "@/services/posts/createPost.services"
+import userStore from "@/store/userStore"
+import { useNavigate } from 'react-router-dom';
 
 function MainContent({ postsData }: { postsData: IpostData[] }) {
 
@@ -55,6 +57,8 @@ function CreatePost() {
 
 function Home() {
   const [postsData, setPostsData] = useState<IpostData[]>([])
+  const { user } = userStore()
+  const navigate = useNavigate();
 
   useEffect(() => {
     getPostsAll().then(response => setPostsData(response?.data))
@@ -65,7 +69,15 @@ function Home() {
       <Toaster  />
       <LeftSidebar />
       <section className="flex-1">
-        <CreatePost />
+        {user ? 
+          <CreatePost /> : 
+          <div className="flex-1 m-8 flex flex-col gap-2 ">
+            <p>You have to log in in order to create a new post</p>
+            <button onClick={()=>navigate("/login")} className="p-3 rounded-lg bg-slate-700 w-fit">
+              Login
+            </button>
+          </div>
+        }
         <MainContent postsData={postsData} />
       </section>
       <RightSidebar />
