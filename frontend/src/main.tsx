@@ -7,14 +7,14 @@ import {
 } from "react-router-dom";
 
 // pages imports
-import App from './App.tsx'
+import Home from "@/pages/Home/Home"
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
   },
   {
     path: "/login",

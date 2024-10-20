@@ -51,14 +51,14 @@ export const createPost = async (req, res) => {
   }
 
   const { content, postImage } = req.body
-  const { user_id } = req.user
+  const { userId } = req.user
 
   try {
     const [post] = await pool.query("INSERT INTO posts (user_id, content, post_image, post_likes) VALUES (?,?,?,?)",
-      [user_id, content, postImage, 0]
+      [userId, content, postImage, 0]
     )
     res.status(200).send({
-      userId: user_id,
+      userId: userId,
       postId: post.insertId,
       content: content,
       postImage: postImage
@@ -69,6 +69,52 @@ export const createPost = async (req, res) => {
   }
 }
 
-export const updatePostById = async (req, res) => { }
+export const updatePostById = async (req, res) => {}
 
-export const deletePostById = async (req, res) => { }
+export const deletePostById = async (req, res) => {}
+
+export const commentByPostId = async (req, res) => {
+  const { userId } = req.user;
+  const { postId, content } = req.body;
+  console.log(`userID: ${userId} , postId: ${postId}, content ${content}`)
+
+  try {
+    const result = await pool.query("INSERT INTO comments (post_id, user_id, comment_content, comment_likes) VALUES (?,?,?,0)",
+      [postId, userId, content]
+    );
+    res.status(201).send({
+      commentId: result[0].insertId,
+      createdAt: new Date(),
+      postId: postId,
+      content: content
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(400).send({message: "Error trying to make a comment"})
+  }
+
+}
+
+export const getCommentsByPostId = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const [comments] = await pool.query("SELECT * FROM comments WHERE post_id=?;", [postId])
+    return res.status(200).send(comments)
+  } catch(error) {
+    console.log("Error getCommentsByPostId: ", error)
+    return res.status(400).send({message: "Error trying to get post by id"})
+  }
+
+}
+
+// export const likePostById = async (req, res) => {
+//   const { userId } = req.user;
+//   const { postId } = req.body
+
+//   try {
+//     const post = await pool.query("INSERT INTO likes (user_id, post_id, liked) VALUES (?, ?, ?);",
+//       [userId, postId, liked]
+//     );
+//   }
+//  }

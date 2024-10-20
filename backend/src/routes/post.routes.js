@@ -5,7 +5,10 @@ import {
   getPostById, 
   createPost, 
   updatePostById, 
-  deletePostById } from "../controllers/post.controllers.js";
+  deletePostById,
+  commentByPostId,
+  getCommentsByPostId
+ } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
@@ -27,5 +30,14 @@ router.put("/:postId", updatePostById)
 
 // DELETE delete post by id - Private 🚧
 router.delete("/:postId", deletePostById)
+
+// GET comments by postId  ✅
+router.get("/comment/:postId", getCommentsByPostId)
+
+// POST comment post - Private ✅
+router.post("/comment", auth, commentByPostId)
+
+// POST like post - Private 🚧
+// router.post("/", auth, likePostById)
 
 export default router;

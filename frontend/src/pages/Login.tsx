@@ -3,6 +3,7 @@ import Container from "../components/Container"
 import userLogin from "../services/users/userLogin.services"
 import userStore from "../store/userStore"
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login(): React.JSX.Element {
   const [email, setEmail] = useState("")
@@ -15,11 +16,16 @@ function Login(): React.JSX.Element {
     e.preventDefault()
     const response = await userLogin({email: email, password: password})
     console.log("Login resp: ", response)
+    
     if (!response.error) {
       setUser(response)
+      toast.success("Login successfully!")
+
       return setTimeout(()=>navigate("/"), 1000)
     }
-    setError(response.error)
+
+    toast.error("Login failed!")
+    return setError(response.error)
   }
 
   return (

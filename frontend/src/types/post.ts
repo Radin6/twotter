@@ -8,3 +8,12 @@ export interface IpostData {
   profile_img: string
   email: string
 }
+
+export interface Icomment {
+  comment_id: number,
+  post_id: number,
+  user_id: number,
+  comment_content: string,
+  comment_likes: number,
+  created_at: string
+}

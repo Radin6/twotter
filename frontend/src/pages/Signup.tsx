@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Container from "../components/Container"
 import userSignup from "../services/users/userSignup.services"
 import userStore from "../store/userStore"
+import toast from "react-hot-toast"
 
 function Signup(): React.JSX.Element {
   const [email, setEmail] = useState("")
@@ -14,6 +15,7 @@ function Signup(): React.JSX.Element {
 
     if (userData) {
       setUser(userData)
+      return toast.success("Sigup successfully!")
     }
     
   }

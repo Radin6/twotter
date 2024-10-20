@@ -1,17 +1,22 @@
 import { create } from "zustand";
 import { IUser } from "../types/user";
+import { persist } from "zustand/middleware";
 
-interface State {
+interface UserStore {
   user: IUser | null;
+  setUser: (newUser: IUser) => void;
 }
 
-interface Action {
-  setUser: (user: State['user'])=>void;
-}
-
-const userStore = create<State & Action>((set)=>({
-  user: null,
-  setUser: (user) => set(() => ({user: user}))
-}))
+const userStore = create(
+  persist<UserStore>(
+    (set) => ({
+      user: null,
+      setUser: (user) => set(() => ({ user })),
+    }),
+    {
+      name: "user-storage",
+    }
+  )
+);
 
 export default userStore;
