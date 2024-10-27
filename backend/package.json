@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/index.js",
+    "prod": "NODE_ENV=prod node --watch src/index.js",
+    "dev": "NODE_ENV=dev node --watch src/index.js",
     "start": "node src/index.js"
   },
   "author": "NicoR",
