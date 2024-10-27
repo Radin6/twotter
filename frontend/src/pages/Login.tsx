@@ -14,18 +14,28 @@ function Login(): React.JSX.Element {
 
   const handleLogin = async (e: any) => {
     e.preventDefault()
-    const response = await userLogin({email: email, password: password})
-    console.log("Login resp: ", response)
-    
-    if (!response.error) {
-      setUser(response)
-      toast.success("Login successfully!")
 
-      return setTimeout(()=>navigate("/"), 1000)
+    try {
+      const response = await userLogin({ email: email, password: password })
+      console.log(response)
+      if (!response.error) {
+        setUser(response)
+
+        toast.success("Login successfully!")
+        return setTimeout(() => navigate("/"), 1000)
+
+      } else {
+
+        toast.error("Login failed!")
+        return setError(response.error)
+      }
+
+
+    } catch (error) {
+
+      console.log("userLogin Error: ", error)
     }
 
-    toast.error("Login failed!")
-    return setError(response.error)
   }
 
   return (
@@ -35,13 +45,13 @@ function Login(): React.JSX.Element {
         <form action="" onSubmit={handleLogin} className="flex flex-col h-full items-center justify-between">
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
-            <input 
-              onChange={(e)=>setEmail((e.target as HTMLInputElement).value)}
+            <input
+              onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
               className="text-black p-1 m-1" type="email" />
             <label htmlFor="password" >Password</label>
             <input
-              onChange={(e)=>setPassword((e.target as HTMLInputElement).value)} 
-              className="text-black p-1 m-1" type="password" 
+              onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+              className="text-black p-1 m-1" type="password"
             />
           </div>
           <button className="bg-gray-500 py-2 px-4 rounded-lg" type="submit">

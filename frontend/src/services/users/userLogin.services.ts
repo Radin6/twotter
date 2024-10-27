@@ -1,6 +1,6 @@
 import Cookies from "cookies-js";
 import axios from "axios";
-import handleAxiosError from "../../ustils/handleAxiosError";
+import handleAxiosError from "@/utils/handleAxiosError";
 import { IUser, IUserResponse } from "../../types/user";
 
 interface IuserLoginProps {

@@ -5,7 +5,7 @@ import getPostsAll from "@/services/posts/getPostsAll.services"
 import LeftSidebar from "@/components/LeftSidebar"
 import RightSidebar from "@/components/RightSidebar"
 import { IpostData } from "@/types/post"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 import createPost from "@/services/posts/createPost.services"
 import userStore from "@/store/userStore"
 import { useNavigate } from 'react-router-dom';
@@ -66,7 +66,6 @@ function Home() {
   
   return (
     <Container>
-      <Toaster  />
       <LeftSidebar />
       <section className="flex-1">
         {user ? 
