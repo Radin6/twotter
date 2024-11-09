@@ -6,7 +6,6 @@ function LeftSidebar() {
     <aside className="h-screen w-[150px]">
       <div className="flex flex-col justify-between h-full p-3 fixed w-[150px] border rounded-md border-gray-500">
         <ul>
-          <li className="p-2 hover:bg-slate-50/30 cursor-pointer">Home</li>
           <li className="p-2 hover:bg-slate-50/30 cursor-pointer">Expore</li>
           <li className="p-2 hover:bg-slate-50/30 cursor-pointer">Profile</li>
         </ul>

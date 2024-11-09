@@ -43,14 +43,21 @@ export const getPostById = async (req, res) => {
 }
 
 export const createPost = async (req, res) => {
-  // Validate Schema
-  try {
-    postSchema.parse(req.body)
-  } catch(error) {
-    return res.status(400).send({message: error.issues.map(element => element.message)})
+
+  const { content } = req.body;
+  const { postImage } = req;
+
+  if (!content) {
+    return res.status(400).json({ error: "Content cannot be empty" });
   }
 
-  const { content, postImage } = req.body
+  // Validate Schema
+  // try {
+  //   postSchema.parse({content: content})
+  // } catch(error) {
+  //   res.status(400).json({error: "Content empty"})
+  // }
+ 
   const { userId } = req.user
 
   try {
@@ -99,7 +106,7 @@ export const getCommentsByPostId = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    const [comments] = await pool.query("SELECT * FROM comments WHERE post_id=?;", [postId])
+    const [comments] = await pool.query("SELECT comments.*, users.email FROM comments JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = ?;", [postId])
     return res.status(200).send(comments)
   } catch(error) {
     console.log("Error getCommentsByPostId: ", error)

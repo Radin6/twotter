@@ -13,7 +13,7 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
   const [comment, setComment] = useState("")
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (comment.length) {
       const response = await commentByPostId({ comment, postId });

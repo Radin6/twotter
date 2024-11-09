@@ -55,6 +55,7 @@ export async function initializeDB() {
           FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
       `)
+      
     // Likes table
     // await pool.query(`
     //     CREATE TABLE IF NOT EXISTS likes (

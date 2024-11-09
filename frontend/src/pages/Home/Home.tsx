@@ -5,10 +5,9 @@ import getPostsAll from "@/services/posts/getPostsAll.services"
 import LeftSidebar from "@/components/LeftSidebar"
 import RightSidebar from "@/components/RightSidebar"
 import { IpostData } from "@/types/post"
-import toast from "react-hot-toast"
-import createPost from "@/services/posts/createPost.services"
 import userStore from "@/store/userStore"
 import { useNavigate } from 'react-router-dom';
+import CreatePost from "./_components/CreatePost"
 
 function MainContent({ postsData }: { postsData: IpostData[] }) {
 
@@ -21,47 +20,13 @@ function MainContent({ postsData }: { postsData: IpostData[] }) {
   )
 }
 
-function CreatePost() {
-  const [content, setContent] = useState("")
-  
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    if (content.length) {
-      await createPost({content});
-      setTimeout(()=>location.reload(), 1000)
-      return toast.success("Post created successfully!")
-    }
-    
-    return toast.error("Content is empty")
-  }
-
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = e.target?.value
-    console.log(newContent)
-    setContent(newContent)
-  }
-
-  return (
-    <div className="border rounded-md border-gray-500 flex-1 m-8">
-      <form className="flex flex-col m-3" onSubmit={event => handleSubmit(event)}>
-        <textarea 
-          onChange={(e)=> handleContentChange(e)}
-          className="bg-transparent flex-1 max-h-[100px] p-3 m-3" name="" id="" 
-        />
-        <button type="submit" className="bg-blue-900 w-fit px-4 py-2 rounded-full">Post</button>
-      </form>
-    </div>
-  )
-}
-
 function Home() {
   const [postsData, setPostsData] = useState<IpostData[]>([])
   const { user } = userStore()
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPostsAll().then(response => setPostsData(response?.data))
+    getPostsAll().then(response => {setPostsData(response?.data); console.log(response?.data)})
   }, [])
   
   return (
