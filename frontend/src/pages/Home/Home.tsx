@@ -9,7 +9,7 @@ import userStore from "@/store/userStore"
 import { useNavigate } from 'react-router-dom';
 import CreatePost from "./_components/CreatePost"
 
-function MainContent({ postsData }: { postsData: IpostData[] }) {
+export function MainContent({ postsData }: { postsData: IpostData[] }) {
 
   return (
     <section className="flex-1 p-8">
@@ -32,7 +32,7 @@ function Home() {
   return (
     <Container>
       <LeftSidebar />
-      <section className="flex-1">
+      <section className="flex-1 border border-gray-600">
         {user ? 
           <CreatePost /> : 
           <div className="flex-1 m-8 flex flex-col gap-2 ">

@@ -2,6 +2,7 @@ import commentByPostId from "@/services/posts/commentByPostId.services";
 import { Icomment } from "@/types/post";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import userStore from "@/store/userStore";
 
 interface CreateComment {
   postId: number
@@ -11,6 +12,7 @@ interface CreateComment {
 
 function CreateComment({ postId, setComments, comments }: CreateComment) {
   const [comment, setComment] = useState("")
+  const { user } = userStore()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,11 +23,11 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
       const { commentId, createdAt, content } = response.data;
 
       const newComment: Icomment = {
-        comment_id: commentId, 
-        post_id: postId, 
-        user_id: 1, 
+        comment_id: commentId,
+        post_id: postId,
+        user_id: 1,
         comment_content: comment,
-        comment_likes: 0, 
+        comment_likes: 0,
         created_at: createdAt
       };
 
@@ -34,7 +36,7 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
       } else {
         setComments(newComment)
       }
-      
+
       return toast.success("Comment created successfully!")
     }
 
@@ -54,7 +56,12 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
           onChange={(e) => handleContentChange(e)}
           className="bg-transparent flex-1 max-h-[100px] p-3 m-3 text-sm" name="" id=""
         />
-        <button type="submit" className="bg-blue-900 w-fit px-4 py-2 rounded-full">Comment</button>
+        {user ?
+          <button type="submit" className="bg-blue-900 w-fit px-4 py-2 rounded-full">
+            Comment
+          </button>
+          : <p className="text-red-400 text-sm">Login to comment</p>
+        }
       </form>
     </div>
   )

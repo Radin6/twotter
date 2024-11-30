@@ -1,5 +1,6 @@
 import getCommentsByPostId from "@/services/posts/getCommentsByPostId.services";
 import { Icomment } from "@/types/post";
+import React from "react";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { FaCommentAlt, FaRegCommentAlt } from "react-icons/fa";
@@ -21,26 +22,31 @@ export function LikeButton({ likes, onLike }: LikeButton) {
 }
 
 interface CommentButton {
-  comments: Icomment[] | null, 
+  comments: Icomment[], 
   setComments: React.Dispatch<any>, 
+  toggleShowCreateComment: () => void,
   postId: number
 }
 
-export function CommentButton({ comments, setComments, postId }: CommentButton) {
+export function CommentButton({ toggleShowCreateComment, comments, setComments, postId }: CommentButton) {
   const handleComment = async () => {
-    if (comments) {
-      return setComments(null);
+    toggleShowCreateComment();
+    if (comments.length > 0) {
+      return setComments([]);
     }
-    const response = await getCommentsByPostId({postId});
-    console.log(response.data);
 
-    setComments(response.data);
+    try {
+      const response = await getCommentsByPostId({ postId });
+      setComments(response.data);
+    } catch (error) {
+      console.error("Failed to load comments:", error);
+    }
 
   }
 
   return (
     <button className="flex items-center gap-1 p-1 rounded-md hover:bg-blue-200/30" onClick={handleComment}>
-      <span>{comments ? <FaCommentAlt /> : <FaRegCommentAlt />}</span>
+      <span>{comments.length > 0 ? <FaCommentAlt /> : <FaRegCommentAlt />}</span>
     </button>
   )
 }

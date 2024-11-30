@@ -71,6 +71,7 @@ export async function initializeDB() {
     //     );
     //   `)
     console.log(`DB initialized: ${DB_DATABASE}`)
+    console.log("Host: ",DB_HOST)
   } catch (error) {
     console.log("error initializing: ", error)
   }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "cookies-js";
+import handleAxiosError from "@/utils/handleAxiosError";
 import { IUserResponse } from "../../types/user";
 
 interface IuserSignupProps {
@@ -16,13 +17,13 @@ async function userSignup(userData : IuserSignupProps) {
   }
 
   try {
-    data = await axios.post<IUserResponse>(import.meta.env.VITE_URL+"/api/users/signup", body)
+    data = await axios.post(import.meta.env.VITE_URL+"/api/users/signup", body)
     const {token, ...newData} = data.data
     Cookies.set("user-twotter", token)
     
     return newData
   } catch(error){
-    return console.log("userSignup error: ", data)
+    return handleAxiosError(error)
   }
 }
 

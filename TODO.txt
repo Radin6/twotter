@@ -1,1 +1,5 @@
--Hacer que funcione la base de datos con los datos que me enviaron al email desde freemysqlhosting.net
+-cuando metí lo de cloudinary parece que rompió lo del token, hay que ver como lo cataloga
+quizás ponerlo antes o después como middleware
+
+FRONTEND
+-seguir lo del profile, necesito un getPostByMe para meter en el Postdata del MainConten componente

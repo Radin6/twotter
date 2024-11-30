@@ -19,10 +19,10 @@ export const getAllPosts = async (req, res) => {
 }
 
 export const getAllPostsByMe = async (req, res) => {
-  const {user_id} = req.user
+  const {userId} = req.user
   try {
-    const [posts] = await pool.query("SELECT * FROM posts WHERE user_id=?;", [user_id])
-    console.log(posts)
+    const [posts] = await pool.query("SELECT posts.*, users.profile_img FROM posts JOIN users ON posts.user_id = users.user_id WHERE posts.user_id=?;", [userId])
+
     return res.status(200).send(posts)
   } catch(error) {
     console.log("Error getting all posts: ", error)

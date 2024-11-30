@@ -11,6 +11,7 @@ import Home from "@/pages/Home/Home"
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import { Toaster } from 'react-hot-toast';
+import ProfilePage from './pages/Profile/Profile';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup/>
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage/>
   }
 ]);
 
