@@ -7,12 +7,17 @@ const getUserByEmail = async (email) => {
   return user;
 }
 
+const getUserByUsername = async (username) => {
+  const [user] = await pool.query('SELECT * FROM users WHERE username=?;', [username])
+  return user;
+}
+
 const signJWT = (user_id, email) => {
 
   const token = jwt.sign({
     userId: user_id,
     email: email
-  },process.env.JWT_SECRET)
+  }, process.env.JWT_SECRET)
   return token;
 }
 
@@ -21,13 +26,13 @@ export const getUsersAll = async (req, res) => {
 }
 
 export const signupUser = async (req, res) => {
-  const { 
-    password, 
+  const {
+    password,
     email,
-    username, 
+    username,
     profileImg = `https://ui-avatars.com/api/?background=random&name=${email}`
   } = req.body
-  
+
 
   try {
     // Check if user exists 
@@ -37,14 +42,21 @@ export const signupUser = async (req, res) => {
       return res.status(409).send({ message: "User already exists" })
     }
 
+    // Check if username exists 
+    const myUserName = await getUserByUsername(username);
+
+    if (myUserName.length) {
+      return res.status(409).send({ message: "Username already exists" })
+    }
+
     // If user and params exists create a new user
     if (email && password) {
       // Hash password
       const hashedPassword = bcrypt.hashSync(password, 10);
 
       const [result] = await pool.query(`
-          INSERT INTO users (email, password, username,profile_img) VALUES (?, ?, ?, ?)
-        `, [email, hashedPassword, username || email, profileImg]);
+          INSERT INTO users (email, password, username, profile_img) VALUES (?, ?, ?, ?)
+        `, [email, hashedPassword, username, profileImg]);
 
       const token = signJWT(result.user_id, email)
 
@@ -75,7 +87,7 @@ export const loginUser = async (req, res) => {
       const [user] = await getUserByEmail(email)
       const validPassword = bcrypt.compareSync(password, user.password)
 
-      if (!validPassword) return res.status(401).send({message: "Wrong email or password"})
+      if (!validPassword) return res.status(401).send({ message: "Wrong email or password" })
 
       const token = signJWT(user.user_id, user.email)
       res.status(200).send({

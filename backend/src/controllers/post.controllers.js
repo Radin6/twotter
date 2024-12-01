@@ -22,7 +22,14 @@ export const getAllPosts = async (req, res) => {
 export const getAllPostsByMe = async (req, res) => {
   const { userId } = req.user
   try {
-    const [posts] = await pool.query("SELECT posts.*, users.profile_img, users.username, users.email FROM posts JOIN users ON posts.user_id = users.user_id WHERE posts.user_id=?;", [userId])
+    const [posts] = await pool.query(`
+      SELECT 
+      posts.*,
+      posts.created_at AS post_created_at, 
+      users.profile_img, 
+      users.username, 
+      users.email 
+      FROM posts JOIN users ON posts.user_id = users.user_id WHERE posts.user_id=?;`, [userId])
 
     return res.status(200).send(posts)
   } catch (error) {

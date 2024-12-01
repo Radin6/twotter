@@ -17,6 +17,7 @@ cloudinary.config({
 
 // Middleware
 const cloudinaryImage = async (req, res, next) => {
+  console.log("Starts cloudinary proccess")
   try {
     // Handle file upload using Multer
     const uploadMiddleware = upload.single('postImage');
@@ -27,8 +28,16 @@ const cloudinaryImage = async (req, res, next) => {
       });
     });
 
+    console.log("File uploaded by multer: ",!req.file)
+
     // If no file is uploaded, proceed to the next middleware
     if (!req.file) return next();
+
+    const image = './images/my_image.jpg';
+
+cloudinary.uploader.upload(image).then(result => {
+  console.log(result);
+})
 
     // Upload file to Cloudinary using buffer
     const uploadResult = await cloudinary.uploader.upload_stream(
