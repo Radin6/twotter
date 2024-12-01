@@ -1,28 +1,61 @@
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import multer from 'multer';
+
 dotenv.config(); 
 
-// Configuration
+// Multer Configuration (Memory Storage)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Cloudinary Configuration
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_KEY,
-    api_secret: process.env.CLOUD_SECRET
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET,
 });
 
-const cloudinaryImage =  async (req, res, next) => {
+// Middleware
+const cloudinaryImage = async (req, res, next) => {
+  try {
+    // Handle file upload using Multer
+    const uploadMiddleware = upload.single('postImage');
+    await new Promise((resolve, reject) => {
+      uploadMiddleware(req, res, (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
 
+    // If no file is uploaded, proceed to the next middleware
     if (!req.file) return next();
 
-    // Upload an image
-    try {
-        const uploadResult = await cloudinary.uploader.upload(req.file.path)
-        req.postImage = uploadResult.url
-        console.log("Cloud middleware out: "+uploadResult.url);
+    // Upload file to Cloudinary using buffer
+    const uploadResult = await cloudinary.uploader.upload_stream(
+      { folder: "uploads" },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary Error:", error);
+          return res.status(500).json({ error: "Failed to upload image" });
+        }
+        req.postImage = result.secure_url;
+        console.log("Uploaded to Cloudinary:", result.secure_url);
+        next();
+      }
+    );
 
-    } catch(error) {
-        console.log("cloudinary error: ",error);
-    }
-   
+    // Write the file buffer to the upload stream
+    const stream = uploadResult;
+    stream.end(req.file.buffer);
+  } catch (error) {
+    console.error("Error in Cloudinary Middleware:", error);
+    return res.status(500).json({ error: "An error occurred while processing the image." });
+  }
+};
+
+export default cloudinaryImage;
+
+
     // // Optimize delivery by resizing and applying auto-format and auto-quality
     // const optimizeUrl = cloudinary.url('shoes', {
     //     fetch_format: 'auto',
@@ -40,8 +73,3 @@ const cloudinaryImage =  async (req, res, next) => {
     // });
 
     // console.log(autoCropUrl);
-
-    next()
-};
-
-export default cloudinaryImage;

@@ -1,2 +1,5 @@
 -cuando metí lo de cloudinary parece que rompió lo del token, hay que ver como lo cataloga
 quizás ponerlo antes o después como middleware
+
+agregar username a la base de datos que sea cambiable
+rigthsidebar que aparezcan los usuarios con el numero de posts
