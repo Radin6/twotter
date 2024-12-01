@@ -3,17 +3,10 @@ import userRoutes from "./routes/user.routes.js"
 import postRoutes from "./routes/post.routes.js"
 import 'dotenv/config';
 import cors from "cors";
-import {
-  FRONTEND_URL
-} from "./config.js";
 
 const app = express();
 
-app.use(cors(
-  {
-    origin: FRONTEND_URL || '*',
-  }
-));
+app.use(cors());
 
 app.options('*', cors());
 
