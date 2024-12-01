@@ -1,12 +1,28 @@
+import getUsersPosts from "@/services/posts/getUsersPosts.services";
+import { useEffect, useState } from "react";
+
+
 function RightSidebar() {
+  const [usersPosts , setUsersPosts] = useState<Array<{email: string, total_posts: number}>>([])
+  
+  useEffect(() => {
+    getUsersPosts().then(response => { setUsersPosts(response?.data); console.log(response?.data) })
+  }, [])
   
   return (
     <aside className=" h-screen w-[150px]">
-      <div className="flex flex-col justify-between h-full p-3 fixed w-[150px]">
+      <div className="flex flex-col h-full p-3 fixed">
+        <h3 className="font-semibold">Posts Ranking</h3>
         <ul>
-          <li className="p-2 hover:bg-slate-50/30 cursor-pointer">user1</li>
-          <li className="p-2 hover:bg-slate-50/30 cursor-pointer">user2</li>
-          <li className="p-2 hover:bg-slate-50/30 cursor-pointer">user3</li>
+          {
+            usersPosts?.map((item, index) => 
+              <li className="p-2" key={index}>
+                <p className="flex">
+                  <span>{item.total_posts}</span>{" · "+item.email}
+                </p>
+              </li>
+            )
+          }
         </ul>
       </div>
     </aside>

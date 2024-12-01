@@ -4,6 +4,7 @@ import userLogin from "../services/users/userLogin.services"
 import userStore from "../store/userStore"
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Button from "@/components/Button";
 
 function Login(): React.JSX.Element {
   const [email, setEmail] = useState("")
@@ -41,7 +42,7 @@ function Login(): React.JSX.Element {
   return (
     <Container style="items-center">
       <div className="flex flex-col items-center w-[280px] border border-gray-300 p-3">
-        <h3>Login</h3>
+        <h3 className="font-mono text-2xl font-bold">Login</h3>
         <form action="" onSubmit={handleLogin} className="flex flex-col h-full items-center justify-between">
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
@@ -54,9 +55,9 @@ function Login(): React.JSX.Element {
               className="text-black p-1 m-1" type="password"
             />
           </div>
-          <button className="bg-gray-500 py-2 px-4 rounded-lg my-5" type="submit">
+          <Button variant="outline" className="my-3" type="submit">
             Login
-          </button>
+          </Button>
           <p 
             className="text-center text-sm hover:text-blue-800 cursor-pointer"
             onClick={()=>navigate("/signup")}>

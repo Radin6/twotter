@@ -23,7 +23,8 @@ export const getUsersAll = async (req, res) => {
 export const signupUser = async (req, res) => {
   const { 
     password, 
-    email, 
+    email,
+    username, 
     profileImg = `https://ui-avatars.com/api/?background=random&name=${email}`
   } = req.body
   
@@ -42,8 +43,8 @@ export const signupUser = async (req, res) => {
       const hashedPassword = bcrypt.hashSync(password, 10);
 
       const [result] = await pool.query(`
-          INSERT INTO users (email, password, profile_img) VALUES (?, ?, ?)
-        `, [email, hashedPassword, profileImg]);
+          INSERT INTO users (email, password, username,profile_img) VALUES (?, ?, ?, ?)
+        `, [email, hashedPassword, username || email, profileImg]);
 
       const token = signJWT(result.user_id, email)
 
@@ -80,6 +81,7 @@ export const loginUser = async (req, res) => {
       res.status(200).send({
         userId: user.user_id,
         email: user.email,
+        username: user.username,
         profileImg: user.profile_img,
         token: token
       })
@@ -97,7 +99,7 @@ export const patchUserbyId = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     if (req.params?.id) {
-      const [rows] = await pool.query("SELECT id, email FROM users WHERE id=?", [req.params.id]);
+      const [rows] = await pool.query("SELECT id, email, username FROM users WHERE id=?", [req.params.id]);
       if (!rows.length) return res.status(404).send({ "message": "User not found" });
       return res.status(200).send(rows[0]);
     }

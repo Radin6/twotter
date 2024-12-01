@@ -7,7 +7,8 @@ import {
   updatePostById, 
   deletePostById,
   commentByPostId,
-  getCommentsByPostId
+  getCommentsByPostId,
+  getUsersPosts
  } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
 import multer from 'multer';
@@ -19,8 +20,11 @@ const upload = multer({ storage });
 
 const router = express.Router();
 
-// GET all posts - Private ✅ add auth
+// GET all posts - Public ✅
 router.get("/all", getAllPosts)
+
+// GET user - Public ✅
+router.get("/usersposts", getUsersPosts)
 
 // GET all post by me - Private ✅
 router.get("/me", auth, getAllPostsByMe)

@@ -3,12 +3,15 @@ import Container from "../components/Container"
 import userSignup from "../services/users/userSignup.services"
 import userStore from "../store/userStore"
 import toast from "react-hot-toast"
+import Button from "@/components/Button"
+import { useNavigate } from "react-router-dom"
 
 function Signup(): React.JSX.Element {
   const [error, setError] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const { setUser } = userStore()
+  const navigate = useNavigate()
 
   const handleSignup = async (e: any) => {
     e.preventDefault()
@@ -18,7 +21,9 @@ function Signup(): React.JSX.Element {
 
       if (!response.error) {
         setUser(response)
-        return toast.success("Signup successfully!")
+        toast.success("Signup successfully!")
+
+        return setTimeout(() => navigate("/login"), 1000)
       } else {
 
         toast.error("Signup failed!")
@@ -36,7 +41,7 @@ function Signup(): React.JSX.Element {
   return (
     <Container style="items-center">
       <div className="flex flex-col items-center w-[280px] border border-gray-300 p-3">
-        <h3>Signup</h3>
+        <h3 className="font-mono text-2xl font-bold">Signup</h3>
         <form action="" onSubmit={handleSignup} className="flex flex-col h-full items-center justify-between">
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
@@ -49,9 +54,9 @@ function Signup(): React.JSX.Element {
               className="text-black p-1 m-1" type="password" 
             />
           </div>
-          <button className="bg-gray-500 py-2 px-4 rounded-lg my-5" type="submit">
+          <Button variant="blue" className="my-5" type="submit">
             Signup
-          </button>
+          </Button>
           {error && <p className="text-red-600">{error}</p>}
         </form>
       </div>

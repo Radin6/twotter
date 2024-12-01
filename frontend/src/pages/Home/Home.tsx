@@ -8,13 +8,14 @@ import { IpostData } from "@/types/post"
 import userStore from "@/store/userStore"
 import { useNavigate } from 'react-router-dom';
 import CreatePost from "./_components/CreatePost"
+import Button from "@/components/Button"
 
 export function MainContent({ postsData }: { postsData: IpostData[] }) {
 
   return (
     <section className="flex-1 p-8">
       <div className="flex flex-col gap-2">
-        {postsData && [...postsData].reverse().map(post => <PostCard key={post.post_id} postData={post} />)}
+        {postsData.length > 0 && [...postsData].reverse().map(post => <PostCard key={post.post_id} postData={post} />)}
       </div>
     </section>
   )
@@ -26,20 +27,26 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPostsAll().then(response => {setPostsData(response?.data); console.log(response?.data)})
+    getPostsAll().then(response => { setPostsData(response?.data) })
   }, [])
-  
+
   return (
     <Container>
       <LeftSidebar />
       <section className="flex-1 border border-gray-600">
-        {user ? 
-          <CreatePost /> : 
+        {user ?
+          <CreatePost /> :
           <div className="flex-1 m-8 flex flex-col gap-2 ">
             <p>You have to log in in order to create a new post</p>
-            <button onClick={()=>navigate("/login")} className="p-3 rounded-lg bg-slate-700 w-fit">
-              Login
-            </button>
+            <div className="flex gap-5 items-center">
+              <Button onClick={() => navigate("/login")} variant="outline">
+                Login
+              </Button>
+              <p>{"or"}</p>
+              <Button onClick={() => navigate("/signup")} variant="blue">
+                Signup
+              </Button>
+            </div>
           </div>
         }
         <MainContent postsData={postsData} />

@@ -10,23 +10,24 @@ export const getAllPosts = async (req, res) => {
     posts.post_likes,
     posts.created_at AS post_created_at,
     users.email,
+    users.username,
     users.profile_img FROM posts INNER JOIN users ON users.user_id = posts.user_id;`)
     res.status(200).send(posts)
-  } catch(error) {
+  } catch (error) {
     console.log("Error getting all posts: ", error)
-    res.status(400).send({message: "Error trying to get all posts"})
+    res.status(400).send({ message: "Error trying to get all posts" })
   }
 }
 
 export const getAllPostsByMe = async (req, res) => {
-  const {userId} = req.user
+  const { userId } = req.user
   try {
-    const [posts] = await pool.query("SELECT posts.*, users.profile_img FROM posts JOIN users ON posts.user_id = users.user_id WHERE posts.user_id=?;", [userId])
+    const [posts] = await pool.query("SELECT posts.*, users.profile_img, users.username, users.email FROM posts JOIN users ON posts.user_id = users.user_id WHERE posts.user_id=?;", [userId])
 
     return res.status(200).send(posts)
-  } catch(error) {
+  } catch (error) {
     console.log("Error getting all posts: ", error)
-    return res.status(400).send({message: "Error trying to get all posts"})
+    return res.status(400).send({ message: "Error trying to get all posts" })
   }
 }
 
@@ -36,9 +37,9 @@ export const getPostById = async (req, res) => {
   try {
     const [post] = await pool.query("SELECT * FROM posts WHERE post_id=?;", [postId])
     return res.status(200).send(post[0])
-  } catch(error) {
+  } catch (error) {
     console.log("Error getPostById: ", error)
-    return res.status(400).send({message: "Error trying to get post by id"})
+    return res.status(400).send({ message: "Error trying to get post by id" })
   }
 }
 
@@ -57,7 +58,7 @@ export const createPost = async (req, res) => {
   // } catch(error) {
   //   res.status(400).json({error: "Content empty"})
   // }
- 
+
   const { userId } = req.user
 
   try {
@@ -72,13 +73,13 @@ export const createPost = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(400).send({message: "Error trying to create a post"})
+    res.status(400).send({ message: "Error trying to create a post" })
   }
 }
 
-export const updatePostById = async (req, res) => {}
+export const updatePostById = async (req, res) => { }
 
-export const deletePostById = async (req, res) => {}
+export const deletePostById = async (req, res) => { }
 
 export const commentByPostId = async (req, res) => {
   const { userId } = req.user;
@@ -97,7 +98,7 @@ export const commentByPostId = async (req, res) => {
     });
   } catch (error) {
     console.log(error)
-    res.status(400).send({message: "Error trying to make a comment"})
+    res.status(400).send({ message: "Error trying to make a comment" })
   }
 
 }
@@ -106,13 +107,26 @@ export const getCommentsByPostId = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    const [comments] = await pool.query("SELECT comments.*, users.email FROM comments JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = ?;", [postId])
+    const [comments] = await pool.query("SELECT comments.*, users.email, users.username FROM comments JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = ?;", [postId])
     return res.status(200).send(comments)
-  } catch(error) {
+  } catch (error) {
     console.log("Error getCommentsByPostId: ", error)
-    return res.status(400).send({message: "Error trying to get post by id"})
+    return res.status(400).send({ message: "Error trying to get post by id" })
   }
 
+}
+
+
+export const getUsersPosts = async (req, res) => {
+  try {
+    const [posts] = await pool.query(`
+      SELECT users.email, COUNT(posts.post_id) AS total_posts FROM users LEFT JOIN posts ON users.user_id = posts.user_id GROUP BY users.email;
+      `)
+    res.status(200).send(posts)
+  } catch (error) {
+    console.log("Error getting the number of post by email: ", error)
+    res.status(400).send({ message: "Error trying to get the number of post by email" })
+  }
 }
 
 // export const likePostById = async (req, res) => {

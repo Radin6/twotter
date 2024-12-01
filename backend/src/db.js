@@ -17,13 +17,15 @@ export const pool = createPool({
 
 export async function initializeDB() {
   try {
-    await pool.query(`CREATE DATABASE IF NOT EXISTS ${DB_DATABASE}`)
-    await pool.query(`USE ${DB_DATABASE}`)
+    await pool.query(`CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};`)
+
+    await pool.query(`USE ${DB_DATABASE};`)
     // Create a users table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
           user_id INT AUTO_INCREMENT PRIMARY KEY,
           email VARCHAR(255) NOT NULL,
+          username VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
           profile_img VARCHAR(255),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

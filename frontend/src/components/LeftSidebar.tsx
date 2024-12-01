@@ -10,13 +10,17 @@ function LeftSidebar() {
     <aside className="h-screen w-[150px]">
       <div className="flex flex-col justify-between h-full p-3 fixed w-[150px]">
         <ul>
-          <li className="flex p-2 gap-2 hover:bg-slate-50/20 hover:rounded-md cursor-pointer" onClick={()=>navigate("/")}>
-            <User className="w-4" />
-            <p>Expore</p>
+          <li>
+            <a href="/" className="flex p-2 gap-2 hover:bg-slate-50/20 hover:rounded-md cursor-pointer">
+              <User className="w-4" />
+              <p>Expore</p>
+            </a>
           </li>
-          <li className="flex p-2 gap-2 hover:bg-slate-50/20 hover:rounded-md cursor-pointer" onClick={()=>navigate("/profile")} >
-            <Search className="w-4" />
-            <p>Profile</p>
+          <li>
+            <a href="/profile" className="flex p-2 gap-2 hover:bg-slate-50/20 hover:rounded-md cursor-pointer" >
+              <Search className="w-4" />
+              <p>Profile</p>
+            </a>
           </li>
         </ul>
         <div>
