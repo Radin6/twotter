@@ -20,7 +20,7 @@ const cloudinaryImage =  async (req, res, next) => {
         console.log("Cloud middleware out: "+uploadResult.url);
 
     } catch(error) {
-        console.log(error);
+        console.log("cloudinary error: ",error);
     }
    
     // // Optimize delivery by resizing and applying auto-format and auto-quality

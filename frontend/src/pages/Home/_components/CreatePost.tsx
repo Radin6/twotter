@@ -28,7 +28,7 @@ function CreatePost() {
 
     } catch (error) {
       toast.error("Failed to create post.");
-      console.log("Error on submit createPost")
+      console.log("Error on submit createPost:", error)
     }
 
   }
