@@ -9,6 +9,7 @@ import getAllPostsByMe from "@/services/posts/getAllPostsByMe.services";
 import { useEffect, useState } from "react";
 import RightSidebar from "@/components/RightSidebar";
 import Modal from "@/components/Modal";
+import toast from "react-hot-toast";
 
 function ProfilePage() {
   const [userData, setUserData] = useState<IpostData[]>([]);
@@ -19,6 +20,7 @@ function ProfilePage() {
   const getUserData = async () => {
     try {
       if (!user) {
+        toast.error("First Login")
         return navigate("/")
       }
       const response = await getAllPostsByMe()

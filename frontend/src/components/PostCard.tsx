@@ -2,6 +2,7 @@ import { LikeButton, CommentButton } from "./ActionButtons";
 import { Icomment, IpostData } from "../types/post";
 import { useEffect, useState } from "react";
 import CreateComment from "@/pages/Home/_components/CreateComment";
+import { formatDistance, subDays } from "date-fns";
 
 interface ICommentEmail extends Icomment {
   email: string
@@ -17,10 +18,13 @@ function PostCard({ postData }: { postData: IpostData }) {
         <img src={postData?.profile_img} className="rounded-full" alt="" width={50} height={50} />
       </div>
       <div className="w-full">
-        <strong>{postData?.email}</strong>
+        <div className="">
+          <strong>{postData?.email}</strong>
+          <span className="text-gray-500 tex-sm"> · {formatDistance(postData?.post_created_at?.slice(0, 10), new Date(), { addSuffix: true })}</span>
+        </div>
         <img className="my-2" src={postData?.post_image} />
         <p className="text-[14px]">{postData?.content}</p>
-        <p className="text-gray-400 font-mono text-[12px] text-right">{postData?.post_created_at?.slice(0, 10)}</p>
+        
         <div className="flex m-1 justify-around">
           <LikeButton likes={postData?.post_likes} onLike={() => { }} />
           <CommentButton 
