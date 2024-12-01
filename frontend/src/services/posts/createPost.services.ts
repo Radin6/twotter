@@ -8,10 +8,6 @@ async function createPost(formData: FormData) {
     "Authorization": `Bearer ${userToken}`
   }
 
-  // const body = {
-  //   formData
-  // }
-
   const response = await axios.post(import.meta.env.VITE_URL + "/api/posts", formData, { headers: headers })
   return response;
 
