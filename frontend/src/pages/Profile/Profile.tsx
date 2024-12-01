@@ -62,6 +62,7 @@ function ProfilePage() {
             </form>
           </Modal>}
         <h3 className="pt-7 pl-[32px] font-bold">{user?.email}</h3>
+        <h3 className="pt-7 pl-[32px] font-mono text-xl">All my posts</h3>
         <MainContent postsData={userData} />
       </section>
       <RightSidebar />

@@ -10,6 +10,7 @@ function Signup(): React.JSX.Element {
   const [error, setError] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
   const { setUser } = userStore()
   const navigate = useNavigate()
 
@@ -17,7 +18,7 @@ function Signup(): React.JSX.Element {
     e.preventDefault()
 
     try {
-      const response = await userSignup({email: email, password: password})
+      const response = await userSignup({email: email, password: password, username: username})
 
       if (!response.error) {
         setUser(response)
@@ -45,13 +46,21 @@ function Signup(): React.JSX.Element {
         <form action="" onSubmit={handleSignup} className="flex flex-col h-full items-center justify-between">
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
-            <input 
+            <input
+              required 
               onChange={(e)=>setEmail((e.target as HTMLInputElement).value)}
               className="text-black p-1 m-1" type="email" />
             <label htmlFor="password" >Password</label>
             <input
+              required
               onChange={(e)=>setPassword((e.target as HTMLInputElement).value)} 
               className="text-black p-1 m-1" type="password" 
+            />
+            <label htmlFor="username" >Username</label>
+            <input
+              required
+              onChange={(e)=>setUsername((e.target as HTMLInputElement).value)} 
+              className="text-black p-1 m-1" type="text" 
             />
           </div>
           <Button variant="blue" className="my-5" type="submit">

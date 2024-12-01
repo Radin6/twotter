@@ -4,16 +4,18 @@ import handleAxiosError from "@/utils/handleAxiosError";
 import { IUserResponse } from "../../types/user";
 
 interface IuserSignupProps {
-  email: string;
+  email: string
   password: string
+  username: string
 }
 
 async function userSignup(userData : IuserSignupProps) {
-  const { email, password } = userData;
+  const { email, password, username } = userData;
   let data
   const body = {
     email: email,
-    password: password
+    password: password,
+    username: username
   }
 
   try {

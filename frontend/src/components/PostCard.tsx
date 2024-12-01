@@ -14,16 +14,16 @@ function PostCard({ postData }: { postData: IpostData }) {
   console.log(postData)
   
   return (
-    <div className="flex flex-row p-4 border rounded-md border-gray-600">
+    <div className="flex flex-row p-2 border rounded-md border-gray-600">
       <div className="min-w-[50px] mr-5">
         <img src={postData?.profile_img} className="rounded-full" alt="" width={50} height={50} />
       </div>
       <div className="w-full">
         <div className="">
           <strong>{postData?.username || postData?.email}</strong>
-          <span className="text-gray-500 tex-sm"> · {formatTime(postData?.created_at)}</span>
+          <span className="text-gray-500 tex-sm"> · {formatTime(postData?.post_created_at)}</span>
         </div>
-        <img className="my-2" src={postData?.post_image} />
+        <img className="my-2 rounded-lg" src={postData?.post_image} />
         <p className="text-[14px]">{postData?.content}</p>
         
         <div className="flex m-1 justify-around">

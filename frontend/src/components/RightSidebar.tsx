@@ -15,7 +15,7 @@ function RightSidebar() {
         <h3 className="font-semibold">Posts Ranking</h3>
         <ul>
           {
-            usersPosts?.map((item, index) => 
+            usersPosts && usersPosts?.map((item, index) => 
               <li className="p-2" key={index}>
                 <p className="flex">
                   <span>{item.total_posts}</span>{" · "+item.email}
