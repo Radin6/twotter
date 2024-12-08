@@ -5,6 +5,7 @@ interface ButtonProps {
   variant?: "default" | "outline" | "blue"
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
+  type?: any
 }
 
 function Button({children, variant, className, ...props} : ButtonProps) {
@@ -22,7 +23,14 @@ function Button({children, variant, className, ...props} : ButtonProps) {
 
   }
 
-  return <button className={style+" "+(className && className)} onClick={props.onClick} {...props} >{children}</button>
+  return (
+    <button 
+      className={style+" "+(className && className)} 
+      onClick={props.onClick} 
+      type={props?.type}
+      {...props} >
+        {children}
+      </button>)
 }
 
 export default Button;

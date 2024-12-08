@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 
 interface UserStore {
   user: IUser | null;
-  setUser: (newUser: IUser) => void;
+  setUser: (newUser: IUser | null) => void;
 }
 
 const userStore = create(

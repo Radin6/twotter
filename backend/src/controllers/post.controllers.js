@@ -127,7 +127,7 @@ export const getCommentsByPostId = async (req, res) => {
 export const getUsersPosts = async (req, res) => {
   try {
     const [posts] = await pool.query(`
-      SELECT users.email, COUNT(posts.post_id) AS total_posts FROM users LEFT JOIN posts ON users.user_id = posts.user_id GROUP BY users.email;
+      SELECT users.username, COUNT(posts.post_id) AS total_posts FROM users LEFT JOIN posts ON users.user_id = posts.user_id GROUP BY users.email;
       `)
     res.status(200).send(posts)
   } catch (error) {

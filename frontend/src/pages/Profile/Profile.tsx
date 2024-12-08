@@ -6,16 +6,22 @@ import { IpostData } from "@/types/post"
 import { useNavigate } from "react-router-dom";
 import { MainContent } from "../Home/Home";
 import getAllPostsByMe from "@/services/posts/getAllPostsByMe.services";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RightSidebar from "@/components/RightSidebar";
 import Modal from "@/components/Modal";
 import toast from "react-hot-toast";
+import Button from "@/components/Button";
+import updateUserMe from "@/services/users/updateUserMe.services";
 
 function ProfilePage() {
+  const { user } = userStore()
   const [userData, setUserData] = useState<IpostData[]>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
-  const { user } = userStore()
+  const [image, setImage] = useState<File|null>(null);
+  const [username, setUsername] = useState<string>(user?.username || "")
+
   const navigate = useNavigate()
+  const imageRef = useRef<HTMLInputElement>(null);
 
   const getUserData = async () => {
     try {
@@ -29,6 +35,37 @@ function ProfilePage() {
 
       console.log("getUserById Error: ", error)
     }
+  }
+
+  const handleInputClick = () => {
+    imageRef?.current?.click();
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedImage = event?.target?.files?.[0];
+
+    if (selectedImage) setImage(selectedImage)
+  }
+
+  const handleSubmit = async(event) => {
+    event.preventDefault()
+    const formData = new FormData()
+
+    if (!(image instanceof File) && !username) return console.log("username and image are empty!!")
+
+    if ((image instanceof File)) {
+      formData.append("postImage", image) // TODO change name to userImage
+    }
+    formData.append("username", username)
+
+    console.log("Sending data Profile update: ")
+
+    try {
+      const response = await updateUserMe(formData)
+      console.log("Response in Profile.tsx: "+response)
+    } catch (error) {
+      console.log("Error in Profile.tsx: "+error)
+    } 
   }
 
   useEffect(() => {
@@ -53,12 +90,31 @@ function ProfilePage() {
         </div>
         {isModal &&
           <Modal setIsModal={setIsModal}>
-            <p>User Email: {user?.email}</p>
-            <form action="">
-              <label htmlFor="">
-                Change Image
-                <input type="file" />
-              </label>
+            <form action="" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-4">
+                <p>Email: {user?.email}</p>
+                <p>Username: {}</p> {/* // get current username */}
+                <input 
+                  value={username}
+                  className="bg-slate-500"
+                  type="text" 
+                  onChange={(event)=>setUsername(event?.target?.value)} />
+                <Button
+                  variant="outline"
+                  className="" 
+                  type="button" 
+                  onClick={handleInputClick}>
+                  Change Image
+                </Button>
+                <input
+                  onChange={handleInputChange}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={imageRef} />
+                {image && <img src={URL.createObjectURL(image)} />}
+                <Button>Save</Button>
+              </div>
             </form>
           </Modal>}
         <h3 className="pt-7 pl-[32px] font-bold">{user?.email}</h3>

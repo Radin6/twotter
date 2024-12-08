@@ -20,7 +20,7 @@ function PostCard({ postData }: { postData: IpostData }) {
       </div>
       <div className="w-full">
         <div className="">
-          <strong>{postData?.username || postData?.email}</strong>
+          <strong>{"@"+postData?.username || postData?.email}</strong>
           <span className="text-gray-500 tex-sm"> · {formatTime(postData?.post_created_at)}</span>
         </div>
         <img className="my-2 rounded-lg" src={postData?.post_image} />

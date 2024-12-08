@@ -104,8 +104,44 @@ export const loginUser = async (req, res) => {
 
 }
 
-export const patchUserbyId = async (req, res) => {
-  res.send("patchUserbyId here")
+export const patchUserMe = async (req, res) => {
+  const { username } = req.body;
+  const { postImage } = req;
+
+  console.log(req.body)
+
+  // TODO: change postImage in cloudinary/multer to profileImage
+  if ( !postImage && !username) {
+    console.log("Not data provided to update user")
+    return res.status(400).send({ message: "Not data provided to update user" })
+  }
+
+  let fields = []
+  let values = []
+  
+  if (postImage !== null && postImage !== undefined) {
+    fields.push("profile_img=?")
+    values.push(postImage)
+    console.log("there is an image")
+  }
+
+  if (username !== null && username !== undefined) {
+    // TODO: Check username does not exists
+    fields.push("username=?")
+    values.push(username)
+    console.log("there is an username")
+  }
+
+  values.push(req.user.userId)
+
+  try {
+    const [response] = await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE user_id=?`, values)
+    res.send(response)
+  } catch (error) {
+    console.log("patchUserMe error: ",error)
+    return res.status(400).send({ message: "Error trying to patch user" })
+  }
+
 }
 
 export const getUserById = async (req, res) => {

@@ -1,10 +1,18 @@
 import userStore from "@/store/userStore";
 import { User, Search } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import Button from "@/components/Button";
+import Cookies from "js-cookie";
 
 function LeftSidebar() {
-  const { user } = userStore()
+  const { user, setUser } = userStore()
   const navigate = useNavigate()
+
+  const handleLogout = () => {
+    Cookies.remove('user-twotter');
+    setUser(null)
+    navigate("/")
+  }
 
   return (
     <aside className="h-screen w-[150px]">
@@ -24,6 +32,7 @@ function LeftSidebar() {
           </li>
         </ul>
         <div>
+          {user && <Button className="my-3" variant="outline" onClick={handleLogout}>Logout</Button>}
           {user &&
             <div className="min-w-[50px] mr-5">
               <img src={user?.profileImg} className="rounded-full" alt="" width={50} height={50} />
