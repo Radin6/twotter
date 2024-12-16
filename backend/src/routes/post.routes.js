@@ -11,12 +11,8 @@ import {
   getUsersPosts
  } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
-import multer from 'multer';
-import cloudinaryImage from "../middleware/cloudinary.js";
 
-// Multer Configuration (Memory Storage)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+import { uploadImages } from "../middleware/cloudinary.js";
 
 const router = express.Router();
 
@@ -33,7 +29,7 @@ router.get("/me", auth, getAllPostsByMe)
 router.get("/:postId", getPostById)
 
 // POST create post - Private ✅
-router.post("/", auth, cloudinaryImage, createPost)
+router.post("/", auth, uploadImages, createPost)
 
 // PUT update post by id - Private 🚧
 router.put("/:postId", updatePostById)

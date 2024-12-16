@@ -1,5 +1,7 @@
 import { pool } from "../db.js";
+import { uploadImages } from "../utils/cloudinary.js"
 import { postSchema } from "../validation/ticketValidation.js";
+import fs from "fs-extra";
 
 export const getAllPosts = async (req, res) => {
   try {
@@ -53,11 +55,16 @@ export const getPostById = async (req, res) => {
 export const createPost = async (req, res) => {
 
   const { content } = req.body;
-  const { postImage } = req;
+  const { files } = req;
 
   if (!content) {
     return res.status(400).json({ error: "Content cannot be empty" });
   }
+
+    // Validar si hay una imagen
+    if (!files || !files.postImage) {
+      console.log("No image received");
+    }
 
   // Validate Schema
   // try {
@@ -69,14 +76,31 @@ export const createPost = async (req, res) => {
   const { userId } = req.user
 
   try {
+    let postImage = null; // Variable para almacenar los datos de la imagen
+
+    // Si hay una imagen, subirla a Cloudinary
+    if (files && files.postImage) {
+      const result = await uploadImages(files.postImage.tempFilePath);
+
+      // Eliminar archivo temporal después de subirlo
+      await fs.unlink(files.postImage.tempFilePath);
+
+      // Guardar los datos de la imagen subido
+      postImage = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+    }
+
+
     const [post] = await pool.query("INSERT INTO posts (user_id, content, post_image, post_likes) VALUES (?,?,?,?)",
-      [userId, content, postImage, 0]
+      [userId, content, postImage ? postImage.secure_url : null, 0]
     )
     res.status(200).send({
       userId: userId,
       postId: post.insertId,
       content: content,
-      postImage: postImage
+      postImage
     })
   } catch (error) {
     console.log(error)
@@ -127,7 +151,7 @@ export const getCommentsByPostId = async (req, res) => {
 export const getUsersPosts = async (req, res) => {
   try {
     const [posts] = await pool.query(`
-      SELECT users.username, COUNT(posts.post_id) AS total_posts FROM users LEFT JOIN posts ON users.user_id = posts.user_id GROUP BY users.email;
+      SELECT users.username, COUNT(posts.post_id) AS total_posts FROM users LEFT JOIN posts ON users.user_id = posts.user_id GROUP BY users.username, users.email;
       `)
     res.status(200).send(posts)
   } catch (error) {
