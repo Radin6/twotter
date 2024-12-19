@@ -1,42 +1,45 @@
 import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 import { CLOUDINARY, PATH_CLOUDINARY_IMAGES } from "../config.js";
 
+// Configure Cloudinary
 cloudinary.config({
   cloud_name: CLOUDINARY.CLOUD_NAME,
   api_key: CLOUDINARY.API_KEY,
-  api_secret: CLOUDINARY.API_SECRET,
-  secure: true,
+  api_secret: CLOUDINARY.API_SECRET
 });
 
-(async () => {
-  try {
-    const result = await cloudinary.api.ping();
-    console.log("Cloudinary configuration is valid:", result);
-  } catch (error) {
-    console.error("Error testing Cloudinary configuration:", error);
+// Upload Image Function Using `upload_stream`
+export const uploadImages = async (fileBuffer) => {
+  if (!fileBuffer) {
+    throw new Error("File buffer is required");
   }
-})();
 
-export const uploadImages = async (imagePath) => {
-  if (!imagePath) {
-    console.error("Image path is required");
-  }
-  try {
-    return await cloudinary.uploader.upload(imagePath, {
-      folder: PATH_CLOUDINARY_IMAGES,
-    });
-  } catch (error) {
-    console.error("Error in uploadImages:", error);
-  }
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: PATH_CLOUDINARY_IMAGES },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error.message, error);
+          return reject(new Error("Failed to upload image to Cloudinary"));
+        }
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
 };
 
+// Delete Image Function (Optional but included for completeness)
 export const deleteImage = async (publicId) => {
   if (!publicId) {
-    console.error("Public ID is required");
+    throw new Error("Public ID is required");
   }
+
   try {
     return await cloudinary.uploader.destroy(publicId);
   } catch (error) {
-    console.error("Error in deleteImage:", error);
+    console.error("Error in deleteImage:", error.message);
+    throw new Error("Failed to delete image from Cloudinary");
   }
 };

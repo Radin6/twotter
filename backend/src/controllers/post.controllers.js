@@ -80,16 +80,18 @@ export const createPost = async (req, res) => {
 
     // Si hay una imagen, subirla a Cloudinary
     if (files?.postImage) {
-      const result = await uploadImages(files.postImage.tempFilePath);
+
+      console.log("File Buffer:", files?.postImage?.data);
+      console.log("File Size:", files.postImage.size); // In bytes
+
+
+      const result = await uploadImages(files.postImage.data);
 
       // Store image details for database insertion
       postImage = {
         public_id: result.public_id,
         secure_url: result.secure_url,
       };
-
-      // Remove temporary file after upload
-      await fs.unlink(files.postImage.tempFilePath);
 
     }
 
