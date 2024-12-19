@@ -61,10 +61,10 @@ export const createPost = async (req, res) => {
     return res.status(400).json({ error: "Content cannot be empty" });
   }
 
-    // Validar si hay una imagen
-    if (!files || !files.postImage) {
-      console.log("No image received");
-    }
+  // Validar si hay una imagen
+  if (!files || !files.postImage) {
+    console.log("No image received");
+  }
 
   // Validate Schema
   // try {
@@ -79,17 +79,18 @@ export const createPost = async (req, res) => {
     let postImage = null; // Variable para almacenar los datos de la imagen
 
     // Si hay una imagen, subirla a Cloudinary
-    if (files && files.postImage) {
+    if (files?.postImage) {
       const result = await uploadImages(files.postImage.tempFilePath);
 
-      // Eliminar archivo temporal después de subirlo
-      await fs.unlink(files.postImage.tempFilePath);
-
-      // Guardar los datos de la imagen subido
+      // Store image details for database insertion
       postImage = {
         public_id: result.public_id,
         secure_url: result.secure_url,
       };
+
+      // Remove temporary file after upload
+      await fs.unlink(files.postImage.tempFilePath);
+
     }
 
 

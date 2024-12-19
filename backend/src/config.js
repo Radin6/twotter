@@ -11,7 +11,7 @@ export const DB_DATABASE = (process.env.NODE_ENV === "dev") ? process.env.DB_DAT
 
 
 // Cloudinary
-export const PATH_TEMP_IMAGES = process.env.PATH_TEMP_IMAGES || 'temp_images';
+export const PATH_TEMP_IMAGES = (process.env.NODE_ENV === "dev") ? './uploads' : '/tmp' ;
 export const PATH_CLOUDINARY_IMAGES = process.env.PATH_CLOUDINARY_PRODUCT_IMAGES || "images";
 export const CLOUDINARY = {
   CLOUD_NAME : process.env.CLOUD_NAME,
