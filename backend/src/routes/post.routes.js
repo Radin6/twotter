@@ -11,8 +11,7 @@ import {
   getUsersPosts
  } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
-
-import { uploadImages } from "../middleware/cloudinary.js";
+import { uploadImages } from "../middleware/multer.js";
 
 const router = express.Router();
 
@@ -29,7 +28,7 @@ router.get("/me", auth, getAllPostsByMe)
 router.get("/:postId", getPostById)
 
 // POST create post - Private ✅
-router.post("/", auth, uploadImages, createPost)
+router.post("/", auth, uploadImages.single("postImage"), createPost)
 
 // PUT update post by id - Private 🚧
 router.put("/:postId", updatePostById)
