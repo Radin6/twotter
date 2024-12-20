@@ -1,4 +1,4 @@
-import app from "./app.js"
+import app from "../api/index.js"
 import {initializeDB} from "./db.js"
 
 const port = 3000;

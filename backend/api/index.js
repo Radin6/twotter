@@ -1,6 +1,6 @@
 import express from "express";
-import userRoutes from "./routes/user.routes.js";
-import postRoutes from "./routes/post.routes.js";
+import userRoutes from "../src/routes/user.routes.js";
+import postRoutes from "../src/routes/post.routes.js";
 import 'dotenv/config';
 import cors from "cors";
 import helmet from "helmet";
@@ -14,7 +14,7 @@ app.use(helmet());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello world!");
+  res.send("Twotter!");
 });
 
 // API routes
