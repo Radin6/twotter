@@ -1,6 +1,8 @@
 import { pool } from "../db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { uploadImages } from "../utils/cloudinary.js"
+import fs from "fs-extra";
 
 const getUserByEmail = async (email) => {
   const [user] = await pool.query('SELECT * FROM users WHERE email=?;', [email])
@@ -106,22 +108,43 @@ export const loginUser = async (req, res) => {
 
 export const patchUserMe = async (req, res) => {
   const { username } = req.body;
-  const { postImage } = req;
+  const { file } = req;
 
-  console.log(req.body)
+  console.log("FILE:",file)
+
+  let profileImage = null;
+
+  try {
+    // If a file was uploaded, upload it to Cloudinary
+    if (file) {
+      const result = await uploadImages(file.path);  // Upload image from the temp file path
+
+      // Store image details for database insertion
+      profileImage = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+
+      // Remove the temporary file after upload
+      await fs.unlink(file.path);
+    }
+  } catch(error) {
+    console.log(error)
+    res.status(400).send({ message: "Error trying to create a post" })
+  }
 
   // TODO: change postImage in cloudinary/multer to profileImage
-  if ( !postImage && !username) {
+  if (!profileImage?.secure_url && !username) {
     console.log("Not data provided to update user")
     return res.status(400).send({ message: "Not data provided to update user" })
   }
 
   let fields = []
   let values = []
-  
-  if (postImage !== null && postImage !== undefined) {
+
+  if (profileImage?.secure_url !== null && profileImage?.secure_url !== undefined) {
     fields.push("profile_img=?")
-    values.push(postImage)
+    values.push(profileImage?.secure_url)
     console.log("there is an image")
   }
 
@@ -135,10 +158,15 @@ export const patchUserMe = async (req, res) => {
   values.push(req.user.userId)
 
   try {
-    const [response] = await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE user_id=?`, values)
-    res.send(response)
+    console.log("Sending query: ",`UPDATE users SET ${fields.join(", ")} WHERE user_id=?`)
+    const response = await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE user_id=?`, values)
+    res.status(201).send({
+      profileImageId: response[0].insertId,
+      profileImage: profileImage?.secure_url,
+      username: username
+    })
   } catch (error) {
-    console.log("patchUserMe error: ",error)
+    console.log("patchUserMe error: ", error)
     return res.status(400).send({ message: "Error trying to patch user" })
   }
 

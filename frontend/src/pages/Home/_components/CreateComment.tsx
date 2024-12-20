@@ -36,7 +36,7 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
       } else {
         setComments(newComment)
       }
-
+      setComment("")
       return toast.success("Comment created successfully!")
     }
 
@@ -45,7 +45,7 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target?.value
-    console.log(newContent)
+
     setComment(newContent)
   }
 
@@ -55,6 +55,7 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
         <textarea
           onChange={(e) => handleContentChange(e)}
           className="bg-transparent flex-1 max-h-[100px] p-3 m-3 text-sm" name="" id=""
+          value={comment}
         />
         {user ?
           <button type="submit" className="bg-blue-900 w-fit px-4 py-2 rounded-full">

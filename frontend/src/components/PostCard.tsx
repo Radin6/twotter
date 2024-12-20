@@ -3,6 +3,7 @@ import { Icomment, IpostData } from "../types/post";
 import { useEffect, useState } from "react";
 import CreateComment from "@/pages/Home/_components/CreateComment";
 import formatTime from "@/utils/formatTime";
+import toast from "react-hot-toast";
 
 interface ICommentEmail extends Icomment {
   email: string
@@ -16,7 +17,7 @@ function PostCard({ postData }: { postData: IpostData }) {
   return (
     <div className="flex flex-row p-2 border rounded-md border-gray-600">
       <div className="min-w-[50px] mr-5">
-        <img src={postData?.profile_img} className="rounded-full" alt="" width={50} height={50} />
+        <img src={postData?.profile_img} className="rounded-full w-[50px] h-[50px] object-cover" alt="" width={50} height={50} />
       </div>
       <div className="w-full">
         <div className="">
@@ -27,7 +28,7 @@ function PostCard({ postData }: { postData: IpostData }) {
         <p className="text-[14px]">{postData?.content}</p>
         
         <div className="flex m-1 justify-around">
-          <LikeButton likes={postData?.post_likes} onLike={() => { }} />
+          <LikeButton likes={postData?.post_likes} onLike={() => toast("Not implemented yet!")} />
           <CommentButton 
             toggleShowCreateComment={() => setShowCreateComment((prev) => !prev)}
             setComments={setComments} 
@@ -36,7 +37,7 @@ function PostCard({ postData }: { postData: IpostData }) {
         </div>
         <div className="flex flex-col">
           {(comments.length > 0) && comments?.map((comment, index) =>
-            <div key={comment.comment_id} className="p-3">
+            <div key={comment.comment_id} className="p-3 border-t border-gray-800">
               <p>{comment.email}</p>
               <span className="text-[14px]">
                 {comment.comment_content}

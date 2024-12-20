@@ -1,5 +1,5 @@
 import express from "express";
-import { userMock } from "../mocks/userMock.js";
+import { uploadImages } from "../middleware/multer.js";
 import { signupUser, loginUser, getUserById, getUsersAll, patchUserMe } from "../controllers/user.controllers.js";
 import auth from "../middleware/auth.js";
 
@@ -12,7 +12,7 @@ router.post("/signup", signupUser)
 router.post("/login", loginUser)
 
 // PATCH user by id - Private ✅
-router.patch("/", auth, patchUserMe)
+router.patch("/", auth, uploadImages.single("profileImage"), patchUserMe)
 
 // NOW NOT IMPLEMENTED ////////////////
 

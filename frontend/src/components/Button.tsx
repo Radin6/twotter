@@ -19,7 +19,7 @@ function Button({children, variant, className, ...props} : ButtonProps) {
       style = "p-2 px-3 rounded-full bg-[#1d9bf0] hover:bg-sky-700 transition duration-30 ease-in-out w-fit"
       break
     default:
-      style = "p-2 px-3 rounded-full bg-[#1d9bf0] hover:bg-salte-700 transition duration-30 ease-in-out w-fit"
+      style = "p-2 px-3 rounded-full bg-[#1d9bf0] hover:bg-sky-700 transition duration-30 ease-in-out w-fit"
 
   }
 

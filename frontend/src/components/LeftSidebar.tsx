@@ -35,7 +35,7 @@ function LeftSidebar() {
           {user && <Button className="my-3" variant="outline" onClick={handleLogout}>Logout</Button>}
           {user &&
             <div className="min-w-[50px] mr-5">
-              <img src={user?.profileImg} className="rounded-full" alt="" width={50} height={50} />
+              <img src={user?.profileImg} className="rounded-full w-[50px] h-[50px] object-cover" alt="" width={50} height={50} />
             </div>
           }
         </div>

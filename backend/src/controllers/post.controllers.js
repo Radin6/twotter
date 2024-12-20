@@ -76,7 +76,7 @@ export const createPost = async (req, res) => {
   const { userId } = req.user
 
   try {
-    let postImage = null; // Variable para almacenar los datos de la imagen
+    let postImage = null;
 
     // If a file was uploaded, upload it to Cloudinary
     if (file) {
