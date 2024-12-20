@@ -4,6 +4,9 @@ import postRoutes from "../src/routes/post.routes.js";
 import 'dotenv/config';
 import cors from "cors";
 import helmet from "helmet";
+import {initializeDB} from "../src/db.js"
+
+const port = 3000;
 
 const app = express();
 
@@ -31,5 +34,10 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal Server Error' });
 });
+
+initializeDB();
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})
 
 export default app;
