@@ -7,33 +7,12 @@ import helmet from "helmet";
 
 const app = express();
 
-// Enable CORS and security headers
 app.use(cors());
 app.use(helmet());
-
-// Force trailing slashes on URLs
-app.use((req, res, next) => {
-  if (!req.url.endsWith('/')) {
-    return res.redirect(301, req.url + '/');
-  }
-  next();
-});
-
-// Rewrite old path to new path
-app.use('/old-path', (req, res) => {
-  res.redirect(301, '/new-path'); // Permanent redirect
-});
-
-// Set global headers
-app.use((req, res, next) => {
-  res.set('X-Custom-Header', 'SomeValue');
-  next();
-});
 
 // Parse incoming JSON requests
 app.use(express.json());
 
-// Basic routes
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
