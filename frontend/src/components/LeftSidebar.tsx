@@ -19,6 +19,9 @@ function LeftSidebar() {
       <div className="flex flex-col justify-between h-full p-3 fixed w-[150px]">
         <ul>
           <li>
+            <img src="/tw-icon.png" alt="" width={60}/>
+          </li>
+          <li>
             <a href="/" className="flex p-2 gap-2 hover:bg-slate-50/20 hover:rounded-md cursor-pointer">
               <User className="w-4" />
               <p>Expore</p>
