@@ -8,7 +8,8 @@ import {
   deletePostById,
   commentByPostId,
   getCommentsByPostId,
-  getUsersPosts
+  getUsersPosts,
+  likePostById
  } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
 import { uploadImages } from "../middleware/multer.js";
@@ -43,6 +44,6 @@ router.get("/comment/:postId", getCommentsByPostId)
 router.post("/comment", auth, commentByPostId)
 
 // POST like post - Private 🚧
-// router.post("/", auth, likePostById)
+router.post("/like", auth, likePostById)
 
 export default router;

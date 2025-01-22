@@ -160,13 +160,40 @@ export const getUsersPosts = async (req, res) => {
   }
 }
 
-// export const likePostById = async (req, res) => {
-//   const { userId } = req.user;
-//   const { postId } = req.body
+export const likePostById = async (req, res) => {
+  const { userId } = req.user;
+  const { postId } = req.body;
 
-//   try {
-//     const post = await pool.query("INSERT INTO likes (user_id, post_id, liked) VALUES (?, ?, ?);",
-//       [userId, postId, liked]
-//     );
-//   }
-//  }
+  try {
+    // Check if the like already exists
+    const [existingLike] = await pool.query(
+      "SELECT COUNT(*) as count FROM likes WHERE user_id = ? AND post_id = ?;",
+      [userId, postId]
+    );
+
+    const isLiked = existingLike[0].count > 0;
+
+    if (isLiked) {
+      // Toggle off: Remove the like if it already exists
+      await pool.query("DELETE FROM likes WHERE user_id = ? AND post_id = ?", [
+        userId,
+        postId,
+      ]);
+      return res.status(200).send({ message: "Like removed" });
+    }
+
+    // Toggle on: Add a new like
+    const [newLike] = await pool.query(
+      "INSERT INTO likes (user_id, post_id, liked) VALUES (?, ?, ?);",
+      [userId, postId, true]
+    );
+
+    res.status(201).send({
+      likeId: newLike.insertId,
+      message: "Post liked successfully",
+    });
+  } catch (error) {
+    console.error("Error liking post:", error);
+    res.status(500).send({ message: "Error trying to like a post" });
+  }
+};

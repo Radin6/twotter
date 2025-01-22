@@ -31,11 +31,9 @@ function CreateComment({ postId, setComments, comments }: CreateComment) {
         created_at: createdAt
       };
 
-      if (comments.length > 0) {
-        setComments([...comments, newComment])
-      } else {
-        setComments(newComment)
-      }
+
+      setComments([...comments, newComment])
+
       setComment("")
       return toast.success("Comment created successfully!")
     }

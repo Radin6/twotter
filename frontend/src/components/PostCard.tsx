@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CreateComment from "@/pages/Home/_components/CreateComment";
 import formatTime from "@/utils/formatTime";
 import toast from "react-hot-toast";
+import likeByPostIdUserId from "@/services/posts/likeByPostIdUserId";
 
 interface ICommentEmail extends Icomment {
   email: string
@@ -14,6 +15,11 @@ function PostCard({ postData }: { postData: IpostData }) {
   const [showCreateComment, setShowCreateComment] = useState(false);
   console.log(postData)
   
+  const handleLikePost = async (postData: IpostData) => {
+    const {post_id, userId} = postData;
+    await likeByPostIdUserId(post_id, userId);
+  }
+
   return (
     <div className="flex flex-row p-2 border rounded-md border-gray-600">
       <div className="min-w-[50px] mr-5">
@@ -28,7 +34,7 @@ function PostCard({ postData }: { postData: IpostData }) {
         <p className="text-[14px]">{postData?.content}</p>
         
         <div className="flex m-1 justify-around">
-          <LikeButton likes={postData?.post_likes} onLike={() => toast("Not implemented yet!")} />
+          <LikeButton likes={postData?.post_likes} onLike={() => handleLikePost(postData)} />
           <CommentButton 
             toggleShowCreateComment={() => setShowCreateComment((prev) => !prev)}
             setComments={setComments} 

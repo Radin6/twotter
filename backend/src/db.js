@@ -62,19 +62,18 @@ export async function initializeDB() {
       `)
       
     // Likes table
-    // await pool.query(`
-    //     CREATE TABLE IF NOT EXISTS likes (
-    //       like_id INT AUTO_INCREMENT PRIMARY KEY,
-    //       user_id INT NOT NULL,
-    //       post_id INT,
-    //       comment_id INT,
-    //       liked BOOLEAN NOT NULL DEFAULT FALSE,
-    //       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    //       FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    //       FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    //       FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE ON UPDATE CASCADE
-    //     );
-    //   `)
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS likes (
+          like_id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          post_id INT NOT NULL,
+          liked BOOLEAN NOT NULL DEFAULT FALSE,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+          FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
+          FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE ON UPDATE CASCADE
+        );
+      `)
     console.log(`DB initialized: ${DB_DATABASE}`)
     console.log("Host: ",DB_HOST)
   } catch (error) {
