@@ -62,7 +62,7 @@ export const createPost = async (req, res) => {
   }
 
   // Validar si hay una imagen
-  if (!file.path) {
+  if (!file?.path) {
     console.log("No image received");
   }
 
@@ -118,7 +118,7 @@ export const commentByPostId = async (req, res) => {
   console.log(`userID: ${userId} , postId: ${postId}, content ${content}`)
 
   try {
-    const result = await pool.query("INSERT INTO comments (post_id, user_id, comment_content, comment_likes) VALUES (?,?,?,0)",
+    const result = await pool.query("INSERT INTO comments (post_id, user_id, comment_content) VALUES (?,?,?)",
       [postId, userId, content]
     );
     res.status(201).send({
@@ -179,7 +179,14 @@ export const likePostById = async (req, res) => {
         userId,
         postId,
       ]);
-      return res.status(200).send({ message: "Like removed" });
+
+      await pool.query(
+        "UPDATE posts SET post_likes = post_likes - 1 WHERE post_id = ?", [postId]
+      )
+      return res.status(200).send({ 
+        isLike: !isLiked,
+        message: "Like removed" 
+      });
     }
 
     // Toggle on: Add a new like
@@ -188,12 +195,19 @@ export const likePostById = async (req, res) => {
       [userId, postId, true]
     );
 
+    await pool.query(
+      "UPDATE posts SET post_likes = post_likes + 1 WHERE post_id = ?", [postId]
+    )
+
     res.status(201).send({
       likeId: newLike.insertId,
+      isLike: !isLiked,
       message: "Post liked successfully",
     });
   } catch (error) {
     console.error("Error liking post:", error);
-    res.status(500).send({ message: "Error trying to like a post" });
+    res.status(500).send({ 
+      message: "Error trying to like a post" 
+    });
   }
 };
