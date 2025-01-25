@@ -4,16 +4,28 @@ import { postSchema } from "../validation/ticketValidation.js";
 import fs from "fs-extra";
 
 export const getAllPosts = async (req, res) => {
+
+  const userId = req.user?.userId || null;
+
   try {
-    const [posts] = await pool.query(`SELECT posts.post_id,
-    posts.user_id,
-    posts.content,
-    posts.post_image,
-    posts.post_likes,
-    posts.created_at AS post_created_at,
-    users.email,
-    users.username,
-    users.profile_img FROM posts INNER JOIN users ON users.user_id = posts.user_id;`)
+
+    const query = `SELECT posts.post_id,
+        posts.user_id,
+        posts.content,
+        posts.post_image,
+        posts.post_likes,
+        posts.created_at AS post_created_at,
+        users.email,
+        users.username,
+        users.profile_img, 
+        ${userId ? "likes.liked AS user_liked" : ""}
+        FROM posts 
+        INNER JOIN users ON users.user_id = posts.user_id
+        ${userId ? "LEFT JOIN likes ON likes.post_id = posts.post_id AND likes.user_id = ?" : ""}
+        ;`
+
+    const [posts] = userId ? await pool.query(query,[userId]) : await pool.query(query)
+
     res.status(200).send(posts)
   } catch (error) {
     console.log("Error getting all posts: ", error)
@@ -165,13 +177,13 @@ export const likePostById = async (req, res) => {
   const { postId } = req.body;
 
   try {
-    // Check if the like already exists
+    // Check if the user liked hte post
     const [existingLike] = await pool.query(
-      "SELECT COUNT(*) as count FROM likes WHERE user_id = ? AND post_id = ?;",
+      "SELECT likes.liked FROM likes WHERE user_id = ? AND post_id = ?;",
       [userId, postId]
     );
 
-    const isLiked = existingLike[0].count > 0;
+    const isLiked = existingLike.length > 0 ? !!existingLike[0].liked : false;
 
     if (isLiked) {
       // Toggle off: Remove the like if it already exists
@@ -183,9 +195,9 @@ export const likePostById = async (req, res) => {
       await pool.query(
         "UPDATE posts SET post_likes = post_likes - 1 WHERE post_id = ?", [postId]
       )
-      return res.status(200).send({ 
+      return res.status(200).send({
         isLike: !isLiked,
-        message: "Like removed" 
+        message: "Like removed"
       });
     }
 
@@ -206,8 +218,8 @@ export const likePostById = async (req, res) => {
     });
   } catch (error) {
     console.error("Error liking post:", error);
-    res.status(500).send({ 
-      message: "Error trying to like a post" 
+    res.status(500).send({
+      message: "Error trying to like a post"
     });
   }
 };

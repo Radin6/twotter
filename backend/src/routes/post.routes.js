@@ -12,12 +12,13 @@ import {
   likePostById
  } from "../controllers/post.controllers.js";
 import auth from "../middleware/auth.js";
+import authOptional from "../middleware/authOptional.js";
 import { uploadImages } from "../middleware/multer.js";
 
 const router = express.Router();
 
 // GET all posts - Public ✅
-router.get("/all", getAllPosts)
+router.get("/all", authOptional, getAllPosts)
 
 // GET user - Public ✅
 router.get("/usersposts", getUsersPosts)
