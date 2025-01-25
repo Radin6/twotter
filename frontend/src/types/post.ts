@@ -9,6 +9,7 @@ export interface IpostData {
   profile_img: string
   email: string
   username: string
+  user_liked?: number
 }
 
 export interface Icomment {

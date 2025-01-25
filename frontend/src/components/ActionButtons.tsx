@@ -7,15 +7,16 @@ import { FaCommentAlt, FaRegCommentAlt } from "react-icons/fa";
 
 interface LikeButton {
   likes: number;
+  likedByMe: boolean
   onLike: () => void;
 }
 
-export function LikeButton({ likes, onLike }: LikeButton) {
+export function LikeButton({ likes, onLike, likedByMe }: LikeButton) {
   return (
     <button
       onClick={() => onLike()}
       className="flex items-center gap-1 p-1 rounded-md hover:bg-red-200/30">
-      <span>{likes ? <FaHeart /> : <CiHeart />}</span>
+      <span>{likedByMe ? <FaHeart /> : <CiHeart />}</span>
       <span>{likes}</span>
     </button>
   )

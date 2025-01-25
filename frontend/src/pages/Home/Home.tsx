@@ -11,7 +11,7 @@ import CreatePost from "./_components/CreatePost"
 import Button from "@/components/Button"
 
 export function MainContent({ postsData }: { postsData: IpostData[] }) {
-
+  console.log(postsData)
   return (
     <section className="flex-1 p-8">
       <div className="flex flex-col gap-2">

@@ -4,8 +4,6 @@ import Cookies from "cookies-js";
 async function createPost(formData: FormData) {
   const userToken = Cookies.get("user-twotter")
 
-  console.log("formdata: ",[...formData.entries()])
-
   const headers = {
     "Authorization": `Bearer ${userToken}`
   }

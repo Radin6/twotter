@@ -1,9 +1,8 @@
 import { LikeButton, CommentButton } from "./ActionButtons";
 import { Icomment, IpostData } from "../types/post";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateComment from "@/pages/Home/_components/CreateComment";
 import formatTime from "@/utils/formatTime";
-import toast from "react-hot-toast";
 import likeByPostIdUserId from "@/services/posts/likeByPostIdUserId";
 
 interface ICommentEmail extends Icomment {
@@ -13,11 +12,20 @@ interface ICommentEmail extends Icomment {
 function PostCard({ postData }: { postData: IpostData }) {
   const [comments, setComments] = useState<ICommentEmail[]>([]);
   const [showCreateComment, setShowCreateComment] = useState(false);
-  console.log(postData)
+  const [likes, setLikes] = useState(postData?.post_likes);
+  const [likedByMe, setLikedByMe] = useState(postData?.user_liked === 1 ? true : false);
   
   const handleLikePost = async (postData: IpostData) => {
     const {post_id, userId} = postData;
-    await likeByPostIdUserId(post_id, userId);
+    const response = await likeByPostIdUserId(post_id, userId);
+
+    if (response?.data?.isLike) {
+      setLikes((prev)=> prev+1)
+    } else if (!response?.data?.isLike) {
+      setLikes((prev)=> prev-1)
+    }
+
+    setLikedByMe((prev)=>!prev)
   }
 
   return (
@@ -34,7 +42,7 @@ function PostCard({ postData }: { postData: IpostData }) {
         <p className="text-[14px]">{postData?.content}</p>
         
         <div className="flex m-1 justify-around">
-          <LikeButton likes={postData?.post_likes} onLike={() => handleLikePost(postData)} />
+          <LikeButton likes={likes} likedByMe={likedByMe} onLike={() => handleLikePost(postData)} />
           <CommentButton 
             toggleShowCreateComment={() => setShowCreateComment((prev) => !prev)}
             setComments={setComments} 
