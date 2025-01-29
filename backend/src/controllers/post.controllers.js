@@ -9,7 +9,8 @@ export const getAllPosts = async (req, res) => {
 
   try {
 
-    const query = `SELECT posts.post_id,
+    const selectFields = `
+      posts.post_id,
         posts.user_id,
         posts.content,
         posts.post_image,
@@ -17,8 +18,11 @@ export const getAllPosts = async (req, res) => {
         posts.created_at AS post_created_at,
         users.email,
         users.username,
-        users.profile_img, 
-        ${userId ? "likes.liked AS user_liked" : ""}
+        users.profile_img 
+        ${userId ? ", likes.liked AS user_liked" : ""}
+    `
+
+    const query = `SELECT ${selectFields}
         FROM posts 
         INNER JOIN users ON users.user_id = posts.user_id
         ${userId ? "LEFT JOIN likes ON likes.post_id = posts.post_id AND likes.user_id = ?" : ""}
