@@ -9,6 +9,7 @@ import userStore from "@/store/userStore"
 import { useNavigate } from 'react-router-dom';
 import CreatePost from "./_components/CreatePost"
 import Button from "@/components/Button"
+import toast from "react-hot-toast"
 
 export function MainContent({ postsData }: { postsData: IpostData[] }) {
   console.log(postsData)
@@ -27,7 +28,11 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPostsAll().then(response => { setPostsData(response?.data) })
+    try {
+      getPostsAll().then(response => { setPostsData(response?.data) })
+    } catch (err) {
+      toast.error("Error loading posts")
+    }
   }, [])
 
   return (
@@ -49,7 +54,17 @@ function Home() {
             </div>
           </div>
         }
-        <MainContent postsData={postsData} />
+        {
+          postsData.length > 0 ?
+            <MainContent postsData={postsData} />
+            :
+            <div className="flex justify-center items-center w-full h-[400px]">
+              <div className="animate-pulse">
+                <img  src="./tw-icon.png" alt="" width={100} />
+                <p className="w-full text-center">Loading</p>
+              </div>
+            </div>
+        }
       </section>
       <RightSidebar />
     </Container>
