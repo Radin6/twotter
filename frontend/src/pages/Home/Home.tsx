@@ -12,11 +12,11 @@ import Button from "@/components/Button"
 import toast from "react-hot-toast"
 
 export function MainContent({ postsData }: { postsData: IpostData[] }) {
-  console.log(postsData)
+
   return (
     <section className="flex-1 p-8">
       <div className="flex flex-col gap-2">
-        {postsData.length > 0 && [...postsData].reverse().map(post => <PostCard key={post.post_id} postData={post} />)}
+        {postsData.length > 0 && [...postsData].map(post => <PostCard key={post.post_id} postData={post} />)}
       </div>
     </section>
   )
@@ -27,9 +27,29 @@ function Home() {
   const { user } = userStore()
   const navigate = useNavigate();
 
+  //Pagination
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(5)
+  const [hasMore, setHasMore] = useState(true)
+
+  const getNewPages = () => {
+    setPage(prev => prev+1)
+    try {
+      getPostsAll({page: page+1, limit: 5}).then((postsData)=> {
+        if (postsData?.data < limit) {
+          setHasMore(false)
+        }
+        setPostsData(prev => [...prev, ...postsData?.data])
+      })
+    } catch (err) {
+      console.log(err)
+    }
+    
+  }
+
   useEffect(() => {
     try {
-      getPostsAll().then(response => { setPostsData(response?.data) })
+      getPostsAll({}).then(response => { setPostsData(response?.data) })
     } catch (err) {
       toast.error("Error loading posts")
     }
@@ -56,7 +76,10 @@ function Home() {
         }
         {
           postsData.length > 0 ?
-            <MainContent postsData={postsData} />
+            <>
+              <MainContent postsData={postsData} />
+              {hasMore && <Button className="block w-fit mx-auto mb-5" variant="blue" onClick={getNewPages}>Load more</Button>}
+            </>
             :
             <div className="flex justify-center items-center w-full h-[400px]">
               <div className="animate-pulse">

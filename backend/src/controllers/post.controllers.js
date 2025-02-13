@@ -9,6 +9,12 @@ export const getAllPosts = async (req, res) => {
 
   try {
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const offset = (page - 1) * limit;
+
+    console.log(page, limit, offset)
+
     const selectFields = `
       posts.post_id,
         posts.user_id,
@@ -22,13 +28,27 @@ export const getAllPosts = async (req, res) => {
         ${userId ? ", likes.liked AS user_liked" : ""}
     `
 
-    const query = `SELECT ${selectFields}
+    let query = `
+        SELECT ${selectFields}
         FROM posts 
         INNER JOIN users ON users.user_id = posts.user_id
-        ${userId ? "LEFT JOIN likes ON likes.post_id = posts.post_id AND likes.user_id = ?" : ""}
-        ;`
+        `
 
-    const [posts] = userId ? await pool.query(query,[userId]) : await pool.query(query)
+    const queryParams = []
+
+    if (userId) {
+      query += ` LEFT JOIN likes ON likes.post_id = posts.post_id AND likes.user_id = ?`
+      queryParams.push(userId)
+    }
+
+    query += `
+      ORDER BY posts.created_at DESC
+      LIMIT ? OFFSET ?;
+    `
+    queryParams.push(limit, offset)
+
+
+    const [posts] = await pool.query(query, queryParams)
 
     res.status(200).send(posts)
   } catch (error) {
